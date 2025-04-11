@@ -1,11 +1,11 @@
-FROM maven:3.8.7-openjdk-18-slim AS MAVEN_TOOL_CHAIN
+FROM maven:3.9.9-sapmachine-21 AS MAVEN_TOOL_CHAIN
 COPY pom.xml /tmp/
 RUN mvn -B dependency:go-offline -f /tmp/pom.xml -s /usr/share/maven/ref/settings-docker.xml
 COPY src /tmp/src/
 WORKDIR /tmp/
 RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package
 
-FROM openjdk:18-jdk-alpine3.15
+FROM sapmachine:jre-alpine-3.21
 
 EXPOSE 8080
 
