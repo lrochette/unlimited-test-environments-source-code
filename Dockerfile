@@ -1,11 +1,11 @@
-FROM maven:3.5.2-jdk-8-alpine AS MAVEN_TOOL_CHAIN
+FROM maven:3.8.7-openjdk-18-slim AS MAVEN_TOOL_CHAIN
 COPY pom.xml /tmp/
 RUN mvn -B dependency:go-offline -f /tmp/pom.xml -s /usr/share/maven/ref/settings-docker.xml
 COPY src /tmp/src/
 WORKDIR /tmp/
 RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package
 
-FROM openjdk:8-jre-alpine3.9
+FROM openjdk:18-jdk-alpine3.15
 
 EXPOSE 8080
 
