@@ -15,7 +15,7 @@ steps:
   run_unit_tests:
     title: Compile/Unit test
     stage: build
-    image: 'maven:3.5.2-jdk-8-alpine'
+    image: 'maven:3.8.7-openjdk-18-slim'
     commands:
       - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository package
   build_app_image:
@@ -66,6 +66,6 @@ steps:
   sonar_scan:
     title: Sonar Scan
     stage: verify
-    image: 'maven:3.8.1-jdk-11-slim'
+    image: 'maven:3.8.7-openjdk-18-slim'
     commands:
       - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository sonar:sonar -Dsonar.login=${{SONAR_KEY}} -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=laurent-rochette -Dsonar.projectKey=lrochette_spring_app
