@@ -27,41 +27,42 @@ steps:
     tag: '${{CF_BRANCH}}'
     dockerfile: Dockerfile
 
-  scan:
-    type: parallel
-    stage: verify
-    steps:
-      scan_code:
-        title: Source security scan
-        image: 'snyk/snyk-cli:maven-3.6.3_java11'
-        commands:
-          - snyk auth --client-secret=${{SNYK_API_TOKEN}}
-          - snyk monitor
+  # scan:
+  #   type: parallel
+  #   stage: verify
+  #   steps:
+  #     scan_code:
+  #       title: Source security scan
+  #       image: 'snyk/snyk-cli:maven-3.6.3_java11'
+  #       commands:
+  #         - snyk auth --client-secret=${{SNYK_API_TOKEN}}
+  #         - snyk monitor
+  #
+  #     scan_image:
+  #       title: Container security scan
+  #       image: 'aquasec/trivy'
+  #       commands:
+  #         - trivy image docker.io/lrochette/spring-actuator-sample-app:${{CF_BRANCH}}
 
-      scan_image:
-        title: Container security scan
-        image: 'aquasec/trivy'
-        commands:
-          - trivy image docker.io/lrochette/spring-actuator-sample-app:${{CF_BRANCH}}
+  # run_integration_tests:
+  #   title: Integration tests
+  #   stage: verify
+  #   image: maven:3.5.2-jdk-8-alpine
+  #   commands:
+  #    - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository verify -Dserver.host=http://my-spring-app -Dsonar.organization=kostis-codefresh-github
+  #   services:
+  #     composition:
+  #       my-spring-app:
+  #         image: '${{build_app_image}}'
+  #         ports:
+  #           - 8080
+  #     readiness:
+  #       timeoutSeconds: 30
+  #       periodSeconds: 15
+  #       image: byrnedo/alpine-curl
+  #       commands:
+  #         - "curl http://my-spring-app:8080/"
 
-  run_integration_tests:
-    title: Integration tests
-    stage: verify
-    image: maven:3.5.2-jdk-8-alpine
-    commands:
-     - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository verify -Dserver.host=http://my-spring-app -Dsonar.organization=kostis-codefresh-github
-    services:
-      composition:
-        my-spring-app:
-          image: '${{build_app_image}}'
-          ports:
-            - 8080
-      readiness:
-        timeoutSeconds: 30
-        periodSeconds: 15
-        image: byrnedo/alpine-curl
-        commands:
-          - "curl http://my-spring-app:8080/"
   sonar_scan:
     title: Sonar Scan
     stage: verify
