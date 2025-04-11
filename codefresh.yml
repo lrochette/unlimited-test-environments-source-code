@@ -9,7 +9,7 @@ steps:
   main_clone:
     type: "git-clone"
     repo: "lrochette/unlimited-test-environments-source-code"
-    revision: '${{CF_BRANCH}}'
+    revision: '${{CF_REVISION}}'
     stage: "clone"
 
   run_unit_tests:
@@ -35,6 +35,7 @@ steps:
         title: Source security scan
         image: 'snyk/snyk-cli:maven-3.6.3_java11'
         commands:
+          - snyk auth --client-secret=${{SNYK_API_TOKEN}}
           - snyk monitor
 
       scan_image:
